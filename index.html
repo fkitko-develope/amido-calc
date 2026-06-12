@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>網戸 価格計算</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: sans-serif;
+      background: #f5f5f5;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      margin-top: 20px;
+      font-size: 18px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #e8f5e9;
+      border-left: 5px solid #4caf50;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>網戸 価格計算</h1>
+
+  <div class="container">
+
+    <label>種類</label>
+    <select id="type">
+      <option value="ロール式網戸">ロール式網戸</option>
+    </select>
+
+    <label>幅（W）</label>
+    <input type="number" id="width" placeholder="幅を入力">
+
+    <label>高さ（H）</label>
+    <input type="number" id="height" placeholder="高さを入力">
+
+    <label>色調</label>
+    <select id="color"></select>
+
+    <label>浴室仕様</label>
+    <select id="bath"></select>
+
+    <button onclick="calcPrice()">価格を計算</button>
+
+    <div id="result" class="result" style="display:none;"></div>
+  </div>
+
+  <script>
+    // ▼ Cloudflare Functions API
+    const API_COLOR = "/api/getColor";
+    const API_BATH  = "/api/getBath";
+    const API_PRICE = "/api/getPrice";
+
+    // ▼ 色調マスタ取得
+    async function loadColor() {
+      const res = await fetch(API_COLOR);
+      const data = await res.json();
+
+      const sel = document.getElementById("color");
+      sel.innerHTML = "";
+
+      data.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.name;
+        opt.textContent = `${item.name}（${item.category}）`;
+        sel.appendChild(opt);
+      });
+    }
+
+    // ▼ 浴室仕様マスタ取得
+    async function loadBath() {
+      const res = await fetch(API_BATH);
+      const data = await res.json();
+
+      const sel = document.getElementById("bath");
+      sel.innerHTML = "";
+
+      data.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item.name;
+        opt.textContent = item.name;
+        sel.appendChild(opt);
+      });
+    }
+
+    // ▼ 価格計算
+    async function calcPrice() {
+      const type  = document.getElementById("type").value;
+      const w     = document.getElementById("width").value;
+      const h     = document.getElementById("height").value;
+      const color = document.getElementById("color").value;
+      const bath  = document.getElementById("bath").value;
+
+      const url = `${API_PRICE}?type=${encodeURIComponent(type)}&w=${w}&h=${h}&color=${encodeURIComponent(color)}&bath=${encodeURIComponent(bath)}`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const result = document.getElementById("result");
+      result.style.display = "block";
+      result.textContent = `計算結果： ${data.price} 円`;
+    }
+
+    // ▼ 初期ロード
+    loadColor();
+    loadBath();
+  </script>
+
+</body>
+</html>
