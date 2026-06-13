@@ -225,7 +225,7 @@ function searchPrice() {
 
   const resultBox = document.getElementById("price");
 
-  // ★ バリデーション（未入力・0以下） ★
+  // ★ 未入力・0以下チェック ★
   if (!width) {
     resultBox.textContent = "幅（W）を入力してください";
     resultBox.style.display = "block";
@@ -246,6 +246,31 @@ function searchPrice() {
     resultBox.textContent = "高さ（H）は 1 以上を入力してください";
     resultBox.style.display = "block";
     return;
+  }
+
+  // ★ 最大値チェック（種類ごとに異なる） ★
+  if (type === "ロール式網戸") {
+    if (width > 1300) {
+      resultBox.textContent = "1300より大きい幅（W）には対応していません";
+      resultBox.style.display = "block";
+      return;
+    }
+    if (height > 2300) {
+      resultBox.textContent = "2300より大きい高さ（H）には対応していません";
+      resultBox.style.display = "block";
+      return;
+    }
+  } else { // スライド式
+    if (width > 1300) {
+      resultBox.textContent = "1300より大きい幅（W）には対応していません";
+      resultBox.style.display = "block";
+      return;
+    }
+    if (height > 2200) {
+      resultBox.textContent = "2200より大きい高さ（H）には対応していません";
+      resultBox.style.display = "block";
+      return;
+    }
   }
 
   // 丸め後（検索用）
