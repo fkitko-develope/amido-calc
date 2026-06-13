@@ -72,7 +72,7 @@
       background: #e8f5e9;
       border-left: 5px solid #4caf50;
       font-size: 18px;
-      display: none; /* 初期非表示 */
+      display: none;
     }
   </style>
 </head>
@@ -175,18 +175,22 @@ function roundH(v) {
 }
 
 // ------------------------------------------------------------
-// 種類変更時の UI 更新
+// 種類変更時の UI 更新（修正版）
 // ------------------------------------------------------------
 window.addEventListener("DOMContentLoaded", () => {
+
   const typeSel = document.getElementById("type");
   const colorSel = document.getElementById("color");
   const bathSel = document.getElementById("bath");
 
+  // 種類変更イベント
   typeSel.addEventListener("change", async () => {
     const type = typeSel.value;
 
+    // PriceList 読み込み
     await loadPriceList(type);
 
+    // 色調リスト更新
     colorSel.innerHTML = "";
     colorMaster[type].forEach(c => {
       const opt = document.createElement("option");
@@ -195,6 +199,7 @@ window.addEventListener("DOMContentLoaded", () => {
       colorSel.appendChild(opt);
     });
 
+    // 浴室仕様リスト更新
     bathSel.innerHTML = "";
     bathMaster[type].forEach(b => {
       const opt = document.createElement("option");
@@ -204,7 +209,11 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  typeSel.dispatchEvent(new Event("change"));
+  // DOM が完全に構築された後に初期化
+  setTimeout(() => {
+    typeSel.dispatchEvent(new Event("change"));
+  }, 0);
+
 });
 
 // ------------------------------------------------------------
