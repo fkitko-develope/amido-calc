@@ -1,10 +1,11 @@
-export async function onRequest(context) {
-  const data = [
-    { name: "標準", code: "STD" },
-    { name: "浴室仕様", code: "BATH" }
+// functions/getBath.js
+export async function onRequest() {
+  const bath = [
+    { value: "なし", display: "なし" },
+    { value: "浴室仕様", display: "浴室仕様" }
   ];
 
-  return new Response(JSON.stringify(data), {
+  return new Response(JSON.stringify(bath), {
     headers: { "Content-Type": "application/json" }
   });
 }
