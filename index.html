@@ -61,6 +61,7 @@
       background: #e8f5e9;
       border-left: 5px solid #4caf50;
       font-size: 18px;
+      display: none; /* ← 初期非表示 */
     }
   </style>
 </head>
@@ -104,7 +105,7 @@
 
 <script>
 // ------------------------------------------------------------
-// 色調マスタ（cloudflared 移植時点の構成）
+// 色調マスタ
 // ------------------------------------------------------------
 const colorMaster = {
   "ロール式網戸": [
@@ -173,10 +174,8 @@ window.addEventListener("DOMContentLoaded", () => {
   typeSel.addEventListener("change", async () => {
     const type = typeSel.value;
 
-    // PriceList 読み込み
     await loadPriceList(type);
 
-    // 色調リスト更新
     colorSel.innerHTML = "";
     colorMaster[type].forEach(c => {
       const opt = document.createElement("option");
@@ -185,7 +184,6 @@ window.addEventListener("DOMContentLoaded", () => {
       colorSel.appendChild(opt);
     });
 
-    // 浴室仕様リスト更新
     bathSel.innerHTML = "";
     bathMaster[type].forEach(b => {
       const opt = document.createElement("option");
@@ -195,7 +193,6 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // 初期実行
   typeSel.dispatchEvent(new Event("change"));
 });
 
@@ -217,13 +214,16 @@ function searchPrice() {
     p.bath === bath
   );
 
+  const resultBox = document.getElementById("price");
+
   if (!hit) {
-    document.getElementById("price").textContent = "該当する価格がありません";
+    resultBox.textContent = "該当する価格がありません";
+    resultBox.style.display = "block";  // ← 表示
     return;
   }
 
-  document.getElementById("price").textContent =
-    `定価：${hit.price}円　単価：${hit.unit}円`;
+  resultBox.textContent = `定価：${hit.price}円　単価：${hit.unit}円`;
+  resultBox.style.display = "block";  // ← 表示
 }
 </script>
 
