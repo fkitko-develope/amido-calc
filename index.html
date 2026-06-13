@@ -218,11 +218,38 @@ window.addEventListener("DOMContentLoaded", () => {
 ------------------------------------------------------------ */
 function searchPrice() {
   const type = document.getElementById("type").value;
-  const width = Number(document.getElementById("width").value);
+
+  // 入力値（表示用）
+  const width  = Number(document.getElementById("width").value);
   const height = Number(document.getElementById("height").value);
 
-  let W, H;
+  const resultBox = document.getElementById("price");
 
+  // ★ バリデーション（未入力・0以下） ★
+  if (!width) {
+    resultBox.textContent = "幅（W）を入力してください";
+    resultBox.style.display = "block";
+    return;
+  }
+  if (width <= 0) {
+    resultBox.textContent = "幅（W）は 1 以上を入力してください";
+    resultBox.style.display = "block";
+    return;
+  }
+
+  if (!height) {
+    resultBox.textContent = "高さ（H）を入力してください";
+    resultBox.style.display = "block";
+    return;
+  }
+  if (height <= 0) {
+    resultBox.textContent = "高さ（H）は 1 以上を入力してください";
+    resultBox.style.display = "block";
+    return;
+  }
+
+  // 丸め後（検索用）
+  let W, H;
   if (type === "ロール式網戸") {
     W = roundW_Roll(width);
     H = roundH_Roll(height);
@@ -242,15 +269,13 @@ function searchPrice() {
     p.bath === bath
   );
 
-  const resultBox = document.getElementById("price");
-
   if (!hit) {
     resultBox.textContent = "該当する価格がありません";
     resultBox.style.display = "block";
     return;
   }
 
-  // ★ 表示は入力値、検索は丸め後 ★
+  // 表示は入力値、検索は丸め後
   resultBox.innerHTML =
     `サイズ：W ${width} × H ${height}<br>` +
     `定価：${hit.price.toLocaleString()}円<br>` +
