@@ -72,6 +72,7 @@
       border-left: 5px solid #4caf50;
       font-size: 18px;
       display: none;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -106,8 +107,10 @@
 
   </div>
 
-<!-- ★★★ ここに script を移動 ★★★ -->
 <script>
+/* ------------------------------------------------------------
+   色調マスタ
+------------------------------------------------------------ */
 const colorMaster = {
   "ロール式網戸": [
     { display: "単色：アイボリーホワイト（IW）", group: "単色" },
@@ -127,11 +130,17 @@ const colorMaster = {
   ]
 };
 
+/* ------------------------------------------------------------
+   浴室仕様マスタ
+------------------------------------------------------------ */
 const bathMaster = {
   "ロール式網戸": ["なし"],
   "スライド式網戸": ["なし", "浴室仕様"]
 };
 
+/* ------------------------------------------------------------
+   PriceList 読み込み
+------------------------------------------------------------ */
 let priceList = [];
 
 async function loadPriceList(type) {
@@ -143,18 +152,36 @@ async function loadPriceList(type) {
   priceList = await res.json();
 }
 
-function roundW(v) {
+/* ------------------------------------------------------------
+   丸め処理（種類ごとに別）
+------------------------------------------------------------ */
+function roundW_Roll(v) {
   const r = [400, 700, 1000, 1300];
   for (const x of r) if (v <= x) return x;
   return r[r.length - 1];
 }
 
-function roundH(v) {
+function roundH_Roll(v) {
   const r = [600, 1000, 1500, 2000, 2300];
   for (const x of r) if (v <= x) return x;
   return r[r.length - 1];
 }
 
+function roundW_Slide(v) {
+  const r = [400, 600, 800, 900, 1100, 1300];
+  for (const x of r) if (v <= x) return x;
+  return r[r.length - 1];
+}
+
+function roundH_Slide(v) {
+  const r = [600, 800, 1000, 1200, 1400, 1600, 1800, 2000, 2200];
+  for (const x of r) if (v <= x) return x;
+  return r[r.length - 1];
+}
+
+/* ------------------------------------------------------------
+   種類変更時の UI 更新
+------------------------------------------------------------ */
 window.addEventListener("DOMContentLoaded", () => {
 
   const typeSel = document.getElementById("type");
@@ -186,10 +213,24 @@ window.addEventListener("DOMContentLoaded", () => {
   typeSel.dispatchEvent(new Event("change"));
 });
 
+/* ------------------------------------------------------------
+   価格計算
+------------------------------------------------------------ */
 function searchPrice() {
   const type = document.getElementById("type").value;
-  const W = roundW(Number(document.getElementById("width").value));
-  const H = roundH(Number(document.getElementById("height").value));
+  const width = Number(document.getElementById("width").value);
+  const height = Number(document.getElementById("height").value);
+
+  let W, H;
+
+  if (type === "ロール式網戸") {
+    W = roundW_Roll(width);
+    H = roundH_Roll(height);
+  } else {
+    W = roundW_Slide(width);
+    H = roundH_Slide(height);
+  }
+
   const colorGroup = document.getElementById("color").value;
   const bath = document.getElementById("bath").value;
 
@@ -217,7 +258,6 @@ function searchPrice() {
   resultBox.style.display = "block";
 }
 </script>
-<!-- ★★★ script はここまで ★★★ -->
 
 </body>
 </html>
