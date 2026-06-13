@@ -41,6 +41,17 @@
       font-size: 16px;
       border-radius: 5px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    /* number 型 input のスピンボタンを消して幅ズレを完全解消 */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
     }
 
     button {
@@ -61,7 +72,7 @@
       background: #e8f5e9;
       border-left: 5px solid #4caf50;
       font-size: 18px;
-      display: none; /* ← 初期非表示 */
+      display: none; /* 初期非表示 */
     }
   </style>
 </head>
@@ -218,12 +229,12 @@ function searchPrice() {
 
   if (!hit) {
     resultBox.textContent = "該当する価格がありません";
-    resultBox.style.display = "block";  // ← 表示
+    resultBox.style.display = "block";
     return;
   }
 
   resultBox.textContent = `定価：${hit.price}円　単価：${hit.unit}円`;
-  resultBox.style.display = "block";  // ← 表示
+  resultBox.style.display = "block";
 }
 </script>
 
