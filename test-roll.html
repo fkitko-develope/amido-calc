@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>getPriceRoll JSON Test</title>
+</head>
+<body>
+
+<h2>getPriceRoll JSON Test</h2>
+
+<pre id="out">Loading...</pre>
+
+<script>
+fetch("/getPriceRoll")
+  .then(res => res.json())
+  .then(json => {
+    document.getElementById("out").textContent =
+      JSON.stringify(json, null, 2);
+  })
+  .catch(err => {
+    document.getElementById("out").textContent =
+      "ERROR: " + err;
+  });
+</script>
+
+</body>
+</html>
