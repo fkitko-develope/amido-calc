@@ -209,7 +209,11 @@ function searchPrice() {
     return;
   }
 
-  resultBox.textContent = `定価：${hit.price}円　単価：${hit.unit}円`;
+  resultBox.innerHTML =
+    "サイズ：W ${W} × H ${H}<br>" +
+    "定価：${hit.price.toLocaleString()}円<br>" +
+    "単価：${hit.unit.toLocaleString()}円";
+
   resultBox.style.display = "block";
 }
 </script>
