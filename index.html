@@ -44,7 +44,6 @@
       box-sizing: border-box;
     }
 
-    /* number 型 input のスピンボタンを消して幅ズレを完全解消 */
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
       -webkit-appearance: none;
@@ -83,41 +82,32 @@
 
   <div class="container">
 
-    <!-- 種類 -->
     <label>種類</label>
     <select id="type">
       <option value="ロール式網戸">ロール式網戸</option>
       <option value="スライド式網戸">スライド式網戸</option>
     </select>
 
-    <!-- 幅 -->
     <label>幅（W）</label>
     <input type="number" id="width" placeholder="例：780">
 
-    <!-- 高さ -->
     <label>高さ（H）</label>
     <input type="number" id="height" placeholder="例：1230">
 
-    <!-- 色調 -->
     <label>色調</label>
     <select id="color"></select>
 
-    <!-- 浴室仕様 -->
     <label>浴室仕様</label>
     <select id="bath"></select>
 
-    <!-- ボタン -->
     <button onclick="searchPrice()">価格を計算</button>
 
-    <!-- 結果 -->
     <div id="price" class="result"></div>
 
   </div>
 
+<!-- ★★★ ここに script を移動 ★★★ -->
 <script>
-// ------------------------------------------------------------
-// 色調マスタ
-// ------------------------------------------------------------
 const colorMaster = {
   "ロール式網戸": [
     { display: "単色：アイボリーホワイト（IW）", group: "単色" },
@@ -137,31 +127,22 @@ const colorMaster = {
   ]
 };
 
-// ------------------------------------------------------------
-// 浴室仕様マスタ
-// ------------------------------------------------------------
 const bathMaster = {
   "ロール式網戸": ["なし"],
   "スライド式網戸": ["なし", "浴室仕様"]
 };
 
-// ------------------------------------------------------------
-// PriceList 読み込み
-// ------------------------------------------------------------
 let priceList = [];
 
 async function loadPriceList(type) {
   const url = type === "ロール式網戸"
-    ? "/functions/getPriceRoll"
-    : "/functions/getPriceSlide";
+    ? "/getPriceRoll"
+    : "/getPriceSlide";
 
   const res = await fetch(url);
   priceList = await res.json();
 }
 
-// ------------------------------------------------------------
-// W/H 丸め処理
-// ------------------------------------------------------------
 function roundW(v) {
   const r = [400, 700, 1000, 1300];
   for (const x of r) if (v <= x) return x;
@@ -174,23 +155,17 @@ function roundH(v) {
   return r[r.length - 1];
 }
 
-// ------------------------------------------------------------
-// 種類変更時の UI 更新（修正版）
-// ------------------------------------------------------------
 window.addEventListener("DOMContentLoaded", () => {
 
   const typeSel = document.getElementById("type");
   const colorSel = document.getElementById("color");
   const bathSel = document.getElementById("bath");
 
-  // 種類変更イベント
   typeSel.addEventListener("change", async () => {
     const type = typeSel.value;
 
-    // PriceList 読み込み
     await loadPriceList(type);
 
-    // 色調リスト更新
     colorSel.innerHTML = "";
     colorMaster[type].forEach(c => {
       const opt = document.createElement("option");
@@ -199,7 +174,6 @@ window.addEventListener("DOMContentLoaded", () => {
       colorSel.appendChild(opt);
     });
 
-    // 浴室仕様リスト更新
     bathSel.innerHTML = "";
     bathMaster[type].forEach(b => {
       const opt = document.createElement("option");
@@ -209,16 +183,9 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // DOM が完全に構築された後に初期化
-  setTimeout(() => {
-    typeSel.dispatchEvent(new Event("change"));
-  }, 0);
-
+  typeSel.dispatchEvent(new Event("change"));
 });
 
-// ------------------------------------------------------------
-// 価格計算
-// ------------------------------------------------------------
 function searchPrice() {
   const type = document.getElementById("type").value;
   const W = roundW(Number(document.getElementById("width").value));
@@ -246,6 +213,7 @@ function searchPrice() {
   resultBox.style.display = "block";
 }
 </script>
+<!-- ★★★ script はここまで ★★★ -->
 
 </body>
 </html>
