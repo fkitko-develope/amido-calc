@@ -250,8 +250,9 @@ function searchPrice() {
     return;
   }
 
+  // ★ 表示は入力値、検索は丸め後 ★
   resultBox.innerHTML =
-    `サイズ：W ${W} × H ${H}<br>` +
+    `サイズ：W ${width} × H ${height}<br>` +
     `定価：${hit.price.toLocaleString()}円<br>` +
     `単価：${hit.unit.toLocaleString()}円`;
 
